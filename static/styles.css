@@ -1,0 +1,44 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+header {
+    background: #1a1a1a;
+    color: #ffffff;
+    padding: 1rem;
+    text-align: center;
+}
+
+nav a {
+    color: #f4a261;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+main {
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    min-height: 300px;
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.8rem;
+    color: #777;
+}
+
+.card {
+    border-left: 5px solid #1a1a1a;
+    background: #eee;
+    padding: 15px;
+    margin-top: 20px;
+}

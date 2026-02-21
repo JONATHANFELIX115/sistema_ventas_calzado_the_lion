@@ -1,15 +1,17 @@
-from flask import Flask
+from flask import Flask, render_template # Importamos render_template 
 
 app = Flask(__name__)
 
 @app.route('/')
 def inicio():
-    return 'Bienvenido a Almacén The Lion – Sistema de Venta de Calzado'
+    # Renderizamos el archivo index.html en lugar de solo texto 
+    return render_template('index.html')
 
 @app.route('/producto/<nombre>')
 def producto(nombre):
-    return f'Producto: {nombre} – Disponible en Almacén The Lion'
+    # Pasamos la variable 'nombre' a la plantilla producto.html 
+    return render_template('producto.html', nombre=nombre)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
+    

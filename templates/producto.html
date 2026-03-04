@@ -5,3 +5,25 @@
 <p>Nombre del Calzado: <strong>{{ nombre }}</strong></p>
 <p>Estado: Disponible en Almacén.</p>
 {% endblock %}
+<div class="form-container">
+    <h2>Registrar Calzado - El León</h2>
+    <form action="/agregar_producto" method="POST">
+        <div>
+            <label>Modelo:</label>
+            <input type="text" name="nombre" placeholder="Ej. Nike Air Jordan" required>
+        </div>
+        <div>
+            <label>Precio:</label>
+            <input type="number" step="0.01" name="precio" placeholder="0.00" required>
+        </div>
+        <div>
+            <label>Stock:</label>
+            <input type="number" name="stock" placeholder="Cantidad disponible" required>
+        </div>
+        <div>
+            <label>Talla:</label>
+            <input type="number" name="talla" placeholder="Ej. 42" required>
+        </div>
+        <button type="submit" style="background-color: #28a745; color: white;">Guardar en Inventario</button>
+    </form>
+</div>

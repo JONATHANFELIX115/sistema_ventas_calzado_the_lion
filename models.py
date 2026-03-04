@@ -1,35 +1,47 @@
 import sqlite3
 
-# Clase Producto: Define los atributos de cada zapato
+# 1. La "Entidad" Producto
 class Producto:
-    def __init__(self, id, nombre, categoria, precio, stock):
+    def __init__(self, id, nombre, categoria, precio, stock, talla):
         self.id = id
         self.nombre = nombre
-        self.categoria = categoria
+        self.categoria = categoria # También puedes llamarlo 'marca'
         self.precio = precio
         self.stock = stock
+        self.talla = talla
 
-# Clase Inventario: Gestiona la lógica y la conexión a SQLite
+# 2. El "Gestor" de la Base de Datos
 class Inventario:
     def __init__(self):
         self.db_path = 'sistema_ventas.db'
         self._conectar_db()
 
-    # Método privado para crear la tabla si no existe
     def _conectar_db(self):
+        """Crea la tabla con todos los campos necesarios incluyendo TALLA."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS productos 
                           (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                           nombre TEXT, 
-                           marca TEXT, 
-                           precio REAL, 
-                           stock INTEGER)''')
+                           nombre TEXT NOT NULL, 
+                           categoria TEXT, 
+                           precio REAL NOT NULL, 
+                           stock INTEGER NOT NULL,
+                           talla TEXT)''')
         conn.commit()
         conn.close()
 
-    # READ: Retorna una LISTA (Colección) de objetos tipo Producto
+    def añadir_producto(self, nombre, categoria, precio, stock, talla):
+        """Inserta un nuevo zapato en la base de datos."""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute('''INSERT INTO productos (nombre, categoria, precio, stock, talla) 
+                          VALUES (?, ?, ?, ?, ?)''',
+                       (nombre, categoria, precio, stock, talla))
+        conn.commit()
+        conn.close()
+
     def obtener_todos(self):
+        """Retorna una lista de objetos tipo Producto."""
         lista_productos = []
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
@@ -37,48 +49,26 @@ class Inventario:
         cursor.execute('SELECT * FROM productos')
         rows = cursor.fetchall()
         for row in rows:
-            # Creamos el objeto y lo añadimos a la lista
-            p = Producto(row['id'], row['nombre'], row['marca'], row['precio'], row['stock'])
+            p = Producto(row['id'], row['nombre'], row['categoria'], 
+                         row['precio'], row['stock'], row['talla'])
             lista_productos.append(p)
         conn.close()
         return lista_productos
 
-    # CREATE: Añade un nuevo ítem
-    def añadir_producto(self, nombre, categoria, precio, stock):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute('INSERT INTO productos (nombre, marca, precio, stock) VALUES (?, ?, ?, ?)',
-                       (nombre, categoria, precio, stock))
-        conn.commit()
-        conn.close()
-
-    # DELETE: Elimina por ID
     def eliminar_producto(self, id):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute('DELETE FROM productos WHERE id = ?', (id,))
         conn.commit()
-        conn.close() 
-        # UPDATE: Actualizar stock o precio
-    def actualizar_producto(self, id, nuevo_precio, nuevo_stock):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute('UPDATE productos SET precio = ?, stock = ? WHERE id = ?',
-                       (nuevo_precio, nuevo_stock, id))
-        conn.commit()
         conn.close()
 
-    # SEARCH: Buscar por nombre y devolver una LISTA (Colección)
-    def buscar_por_nombre(self, nombre_buscado):
-        lista_resultados = []
+    def actualizar_producto(self, id, nuevo_precio, nuevo_stock, nueva_talla):
         conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
-        # Usamos LIKE para búsquedas parciales
-        cursor.execute("SELECT * FROM productos WHERE nombre LIKE ?", ('%' + nombre_buscado + '%',))
-        rows = cursor.fetchall()
-        for row in rows:
-            p = Producto(row['id'], row['nombre'], row['marca'], row['precio'], row['stock'])
-            lista_resultados.append(p)
+        cursor.execute('''UPDATE productos 
+                          SET precio = ?, stock = ?, talla = ? 
+                          WHERE id = ?''',
+                       (nuevo_precio, nuevo_stock, nueva_talla, id))
+        conn.commit()
         conn.close()
-        return lista_resultados 
+        

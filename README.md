@@ -55,3 +55,47 @@ El sistema ofrece dos interfaces funcionales:
     Eficiencia: El uso de diccionarios demostró ser superior a las listas para búsquedas por ID único.
 
     Despliegue Real: Se logró configurar un entorno de producción en Render utilizando gunicorn y manejando correctamente las dependencias. 
+    # 🦁 Sistema de Gestión de Inventario "The Lion"
+
+Bienvenido al repositorio oficial del sistema de gestión de calzado para la tienda **"The Lion"**. Este proyecto integra Programación Orientada a Objetos (POO), bases de datos relacionales y una interfaz web moderna.
+
+---
+
+## 1. Introducción
+Este sistema avanzado permite optimizar las operaciones **CRUD** (Crear, Leer, Actualizar, Eliminar) mediante la integración de Python, Flask y SQLite, garantizando la eficiencia en el manejo de stock de calzado.
+
+## 2. Estructura de Clases (POO)
+Se han implementado dos clases principales que encapsulan la lógica de negocio:
+* **Clase Producto:** Representa la entidad individual (ID, nombre, categoría, precio, stock y talla).
+* **Clase Inventario:** Controlador central que gestiona la interacción entre la base de datos y la colección en memoria.
+
+## 3. Implementación y Uso de Colecciones
+Se seleccionó el **Diccionario (dict)** como colección principal:
+* **Búsqueda Rápida:** Utiliza el ID como clave para complejidad $O(1)$.
+* **Gestión de Memoria:** Sincronización entre `productos_dict` y SQLite para evitar consultas excesivas al disco.
+
+## 4. Persistencia con SQLite 🗄️
+El almacenamiento se realiza en `the_lion_inventory.db`:
+* **Tabla calzado:** Almacena permanentemente la información del inventario.
+* **Integridad:** Cada operación CRUD actualiza la DB y sincroniza la colección en memoria instantáneamente.
+
+## 5. Interfaces del Sistema
+* **💻 Menú de Consola (`main_consola.py`):** Gestión directa desde la terminal.
+* **🌐 Interfaz Web (Flask):** Aplicación visual amigable para el usuario final.
+
+## 6. Instrucciones de Ejecución
+1. **Activar entorno virtual:** `.\venv\Scripts\activate`
+2. **Instalar dependencias:** `pip install -r requirements.txt`
+3. **Ejecutar servidor:** `python app.py`
+
+## 7. Enlaces del Proyecto 🔗
+* **Repositorio GitHub:** [Visitar Repo](https://github.com/JONATHANFELIX115/sistema_ventas_calzado_the_lion)
+* **Aplicativo en la Nube:** [Ver en Render](https://sistema-ventas-calzado-the-lion-2.onrender.com)
+
+## 8. Conclusiones y Aprendizajes
+* **Dominio de POO:** Aplicación de encapsulación y abstracción.
+* **Eficiencia:** Superioridad de diccionarios sobre listas para búsquedas por ID.
+* **Despliegue:** Configuración exitosa en entorno de producción con Gunicorn.
+
+---
+© 2026 Almacén The Lion - Proyecto de Gestión de Sistemas.

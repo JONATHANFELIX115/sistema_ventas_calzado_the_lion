@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; border: 2px solid #d4a017; border-radius: 8px; background: #fff;">
+    
+    <h2 style="color: #333; text-align: center;">✏️ Editar Calzado</h2>
+    <p style="text-align: center; color: #666;">Cambiando datos de: <strong>{{ producto.nombre }}</strong></p>
+
+    <form action="{{ url_for('editar_producto', id=producto.id) }}" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+        
+        <input type="hidden" name="id" value="{{ producto.id }}">
+
+        <div>
+            <label style="font-weight: bold;">Modelo:</label><br>
+            <input type="text" name="nombre" value="{{ producto.nombre }}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+        </div>
+
+        <div>
+            <label style="font-weight: bold;">Marca:</label><br>
+            <input type="text" name="marca" value="{{ producto.marca }}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+                <label style="font-weight: bold;">Talla:</label>
+                <input type="number" name="talla" value="{{ producto.talla }}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+            </div>
+            <div style="flex: 1;">
+                <label style="font-weight: bold;">Precio:</label>
+                <input type="number" step="0.01" name="precio" value="{{ producto.precio }}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+            </div>
+        </div>
+
+        <div>
+            <label style="font-weight: bold;">Stock Actual:</label><br>
+            <input type="number" name="stock" value="{{ producto.stock }}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+        </div>
+
+        <div style="margin-top: 10px; display: flex; gap: 10px;">
+            <button type="submit" style="flex: 2; background: #d4a017; color: white; border: none; padding: 12px; font-size: 16px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                💾 Guardar Cambios
+            </button>
+            <a href="{{ url_for('index') }}" style="flex: 1; text-align: center; text-decoration: none; background: #eee; color: #333; padding: 12px; border-radius: 5px; border: 1px solid #ccc;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

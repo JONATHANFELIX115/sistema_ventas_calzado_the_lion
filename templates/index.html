@@ -1,53 +1,140 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Inventario Almacén The Lion</h2>
+<style>
+    /* Configuración General */
+    .inventory-container {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        max-width: 1000px;
+        margin: 20px auto;
+        padding: 0 15px;
+    }
 
-<form action="{{ url_for('buscar') }}" method="GET" style="margin-bottom: 20px;">
-    <input type="text" name="query" placeholder="Buscar producto por nombre..." required>
-    <button type="submit">🔍 Buscar</button>
-    <a href="{{ url_for('index') }}">Ver todos</a>
-</form>
+    h2 { color: #333; text-align: center; margin-bottom: 25px; }
 
-<hr>
+    /* Buscador */
+    .search-section {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+    }
+    .search-form { display: flex; gap: 10px; }
+    .search-input { flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #ccc; }
+    
+    /* Botones */
+    .btn { padding: 8px 15px; border-radius: 4px; border: none; cursor: pointer; text-decoration: none; font-weight: 500; transition: 0.3s; }
+    .btn-dark { background: #333; color: white; }
+    .btn-light { background: #eee; color: #333; border: 1px solid #ccc; }
+    .btn-delete { background: #e74c3c; color: white; font-size: 0.85rem; }
+    .btn-save { background: #d4a017; color: white; padding: 12px 25px; font-size: 16px; width: 100%; }
+    .btn:hover { opacity: 0.8; }
 
-<table border="1" style="width:100%; border-collapse: collapse; text-align: left;">
-    <thead>
-        <tr style="background-color: #f2f2f2;">
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Talla</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for p in productos %}
-        <tr>
-            <td>{{ p.id }}</td>
-            <td>{{ p.nombre }}</td>
-            <td>{{ p.talla }}</td>
-            <td>${{ p.precio }}</td>
-            <td>{{ p.stock }} units</td>
-            <td>
-                <form action="{{ url_for('eliminar', id=p.id) }}" method="POST" style="display:inline;">
-                    <button type="submit" onclick="return confirm('¿Estás seguro de eliminar este calzado?')">Eliminar</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    /* Tabla */
+    .table-container { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: white; }
+    th { background-color: #d4a017; color: white; padding: 12px; text-align: left; border: 1px solid #ddd; }
+    td { padding: 12px; border: 1px solid #ddd; vertical-align: middle; }
+    .price-tag { color: #27ae60; font-weight: bold; }
 
-<br><hr>
+    /* Formulario */
+    .form-card {
+        background: #fff;
+        padding: 25px;
+        border: 2px solid #d4a017;
+        border-radius: 8px;
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .full-width { grid-column: span 2; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+    .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+</style>
 
-<h3>Registrar Nuevo Calzado</h3>
-<form action="{{ url_for('agregar_producto') }}" method="POST">
-    <input type="text" name="nombre" placeholder="Modelo (Ej: Bota Lion)" required>
-    <input type="number" name="talla" placeholder="Talla (Ej: 42)" required>
-    <input type="number" step="0.01" name="precio" placeholder="Precio" required>
-    <input type="number" name="stock" placeholder="Cantidad" required>
-    <button type="submit" style="background-color: #d4a017; color: white; cursor: pointer;">Guardar Producto</button>
-</form>
+<div class="inventory-container">
+    
+    <h2>🦁 Inventario Almacén "The Lion"</h2>
 
+    <div class="search-section">
+        <form action="{{ url_for('buscar') }}" method="GET" class="search-form">
+            <input type="text" name="query" class="search-input" placeholder="Buscar calzado por nombre..." required>
+            <button type="submit" class="btn btn-dark">🔍 Buscar</button>
+            <a href="{{ url_for('index') }}" class="btn btn-light">Ver Todos</a>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Marca</th>
+                    <th>Talla</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th style="text-align: center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in productos %}
+                <tr>
+                    <td>{{ p.id }}</td>
+                    <td><strong>{{ p.nombre }}</strong></td>
+                    <td>{{ p.marca }}</td>
+                    <td>{{ p.talla }}</td>
+                    <td class="price-tag">${{ "%.2f"|format(p.precio) }}</td>
+                    <td>{{ p.stock }} unidades</td>
+                    <td style="text-align: center;">
+                        <form action="{{ url_for('eliminar', id=p.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-delete" 
+                                    onclick="return confirm('¿Eliminar {{ p.nombre }} del inventario?')">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 30px; color: #888;">
+                        No hay productos registrados en el inventario.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-card">
+        <h3 style="margin-top: 0; color: #d4a017; margin-bottom: 20px;">👟 Registrar Nuevo Calzado</h3>
+        <form action="{{ url_for('agregar_producto') }}" method="POST" class="form-grid">
+            <div class="form-group">
+                <label>Modelo:</label>
+                <input type="text" name="nombre" placeholder="Ej: Bota de Cuero" required>
+            </div>
+            <div class="form-group">
+                <label>Marca:</label>
+                <input type="text" name="marca" placeholder="Ej: The Lion Custom" required>
+            </div>
+            <div class="form-group">
+                <label>Talla:</label>
+                <input type="number" name="talla" placeholder="Ej: 40" required>
+            </div>
+            <div class="form-group">
+                <label>Precio:</label>
+                <input type="number" step="0.01" name="precio" placeholder="0.00" required>
+            </div>
+            <div class="form-group">
+                <label>Stock Inicial:</label>
+                <input type="number" name="stock" placeholder="Cantidad" required>
+            </div>
+            <div class="full-width" style="text-align: right; margin-top: 10px;">
+                <button type="submit" class="btn btn-save">
+                    💾 Guardar en Inventario
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
 {% endblock %}

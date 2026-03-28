@@ -188,4 +188,25 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all() 
     app.run(debug=True)
-    
+    from flask import Flask, render_template, redirect, url_for, make_response
+from services.producto_service import ProductoService, generar_pdf_productos
+from forms.producto_form import ProductoForm
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'tu_clave_secreta'
+
+@app.route('/productos')
+def listar_productos():
+    productos = ProductoService.listar_todos()
+    return render_template('productos/index.html', productos=productos)
+
+@app.route('/productos/reporte')
+def reporte_pdf():
+    productos = ProductoService.listar_todos()
+    pdf_content = generar_pdf_productos(productos)
+    response = make_response(pdf_content)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=reporte_inventario.pdf'
+    return response
+
+# Aquí agregarías las rutas de crear, editar y eliminar usando ProductoService
